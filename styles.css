@@ -1,0 +1,30 @@
+/* Minimal styles for the standalone Equation Search game */
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --muted:#6b7280; --text:#0f172a;
+  --accent:#2563eb; --good:#10b981; --shadow:0 12px 30px rgba(16,24,40,.08);
+  --radius:20px;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Segoe UI,Roboto,Arial}
+.container{max-width:820px;margin:40px auto;padding:0 20px}
+.header h1{margin:0 0 4px 0;font-size:28px}
+.muted{color:var(--muted)}
+.card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:16px 0}
+.btn{border:none;border-radius:999px;padding:10px 16px;background:#e5e7eb;cursor:pointer}
+.btn.primary{background:#e9d5ff;color:#6d28d9}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.footer{color:var(--muted);text-align:center;margin:16px 0}
+
+/* Grid */
+.search-grid{
+  display:grid;
+  grid-template-columns:repeat(8, minmax(0,1fr));
+  gap:8px; user-select:none; margin-top:10px;
+}
+.cell{
+  background:#f1f5f9;border-radius:12px;padding:12px;
+  text-align:center;font-weight:700; cursor:pointer; transition:transform .03s;
+}
+.cell:active{ transform:scale(.98) }
+.cell.selected{ outline:3px solid #93c5fd; background:#e0f2fe; }
+.cell.found{ background:#dcfce7; outline:2px solid var(--good); }
+@media (max-width:600px){ .search-grid{ grid-template-columns:repeat(8, minmax(0,1fr)); } }

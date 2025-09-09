@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Equation Search — Math Game</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>🔍 Equation Search</h1>
+      <p class="muted">Find equations that equal <strong id="searchTarget"></strong>. Drag in straight or diagonal lines.</p>
+      <div class="btn-row">
+        <button id="btn-new" class="btn primary">New Puzzle</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div id="searchGrid" class="search-grid" aria-label="Equation grid"></div>
+    </section>
+
+    <footer class="footer">
+      <small>© 2025 • Works offline • No build tools</small>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
