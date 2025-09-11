@@ -1,33 +1,43 @@
-// Standalone Equation Search — pure JS, no deps
-const GRID_SIZE = 8;           // 8x8
+// Top comment: Standalone Equation Search — pure JS, no deps
+
+// --- Constants and configuration ---
+const GRID_SIZE = 6;           // 8x8
 const TARGET_MIN = 10, TARGET_MAX = 50;
 const HIDDEN_EQUATIONS = 3;    // how many valid lines per round
 const DIRS = [ [1,0],[0,1],[1,1],[-1,1],[-1,0],[0,-1],[-1,-1],[1,-1] ]; // straight/diagonal
 
+// --- Element references ---
 const els = {
   grid: document.getElementById('searchGrid'),
   target: document.getElementById('searchTarget'),
   btnNew: document.getElementById('btn-new'),
 };
 
+// --- Game state ---
 let game = { target: null, dragging:false, path:[], cells:[], answersLeft:0 };
 
+// --- Utility: speak ---
 function speak(text){
   if (!('speechSynthesis' in window)) return;
   const u = new SpeechSynthesisUtterance(text);
   window.speechSynthesis.speak(u);
 }
 
+// --- Utility: random integer ---
 function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 
+// --- Pick a random target ---
 function pickTarget(){ return randInt(TARGET_MIN, TARGET_MAX); }
 
+// --- Convert display op to JS op ---
 function opToJs(op){ return op==='×'?'*':op==='÷'?'/':op==='−'?'-':op; }
 
+// --- Evaluate simple expression ---
 function evalExpr(a,op,b){
   try{ return Function('return ('+a+')'+opToJs(op)+'('+b+');')(); } catch { return NaN; }
 }
 
+// --- Build candidate equations for target ---
 function buildEquationsForTarget(target){
   const eqs = [];
   // + : a + b = target
@@ -58,9 +68,11 @@ function buildEquationsForTarget(target){
   return out;
 }
 
+// --- Grid helpers ---
 function emptyGrid(n){ return Array.from({length:n},()=>Array.from({length:n},()=>'')); }
 function inBounds(r,c){ return r>=0 && r<GRID_SIZE && c>=0 && c<GRID_SIZE; }
 
+// --- Try placing a token line on grid ---
 function tryPlaceLine(grid, tokens){
   for(let k=0;k<250;k++){
     const [dr,dc] = DIRS[Math.floor(Math.random()*DIRS.length)];
@@ -82,6 +94,7 @@ function tryPlaceLine(grid, tokens){
   return false;
 }
 
+// --- Fill remaining cells with random tokens ---
 function fillRandoms(grid){
   const pool=['+','−','×','÷','=','0','1','2','3','4','5','6','7','8','9'];
   for(let r=0;r<GRID_SIZE;r++){
@@ -91,6 +104,7 @@ function fillRandoms(grid){
   }
 }
 
+// --- Render grid DOM ---
 function renderGrid(grid){
   els.grid.innerHTML=''; game.cells=[];
   for(let r=0;r<GRID_SIZE;r++){
@@ -107,10 +121,11 @@ function renderGrid(grid){
   document.addEventListener('mouseup', ()=>{ if(game.dragging) finishDrag(); });
 }
 
+// --- Selection helpers ---
 function clearSelected(){ game.cells.forEach(el=>el.classList.remove('selected')); }
-
 function rc(el){ return [Number(el.dataset.r), Number(el.dataset.c)]; }
 
+// --- Check straight/diagonal line constraint ---
 function sameLine(path){
   if(path.length<2) return true;
   const [r0,c0]=rc(path[0]); const [r1,c1]=rc(path[1]);
@@ -122,12 +137,12 @@ function sameLine(path){
   return DIRS.some(([adr,adc])=>adr===Math.sign(r1-r0)&&adc===Math.sign(c1-c0));
 }
 
+// --- Mouse event handlers ---
 function onDown(e){
   if(e.button!==0) return;
   game.dragging=true; game.path=[e.currentTarget];
   e.currentTarget.classList.add('selected');
 }
-
 function onEnter(e){
   if(!game.dragging) return;
   const last=game.path[game.path.length-1];
@@ -135,9 +150,9 @@ function onEnter(e){
   const next=[...game.path, e.currentTarget];
   if(sameLine(next)){ game.path=next; e.currentTarget.classList.add('selected'); }
 }
-
 function onUp(){ if(game.dragging) finishDrag(); }
 
+// --- Finish drag / check answer ---
 function finishDrag(){
   game.dragging=false;
   const tokens = game.path.map(el=>el.textContent);
@@ -158,6 +173,7 @@ function finishDrag(){
   clearSelected(); game.path=[];
 }
 
+// --- Build a new puzzle round ---
 function buildRound(){
   const grid=emptyGrid(GRID_SIZE);
   const target = pickTarget();
@@ -171,5 +187,6 @@ function buildRound(){
   renderGrid(grid);
 }
 
+// --- Wire up and start ---
 els.btnNew.addEventListener('click', buildRound);
 buildRound();
