@@ -1,27 +1,22 @@
-<!-- README comment: Embed guide for Equation Search -->
-
 # Equation Search — Embed Guide
 
-<!-- Steps section -->
-Use this if you want to place the game inside an existing page as an iframe.
+Use this document to embed the game into another page using an iframe.
 
-## Steps
-1. Host these three files together: `index.html`, `styles.css`, `app.js`.
-2. On the page where you want the game, paste:
+## Files to host
+- index.html — main game page
+- styles.css — visual styles
+- app.js — game logic
 
-<!-- Example snippet -->
+## Quick steps
+1. Place the three files above on a web‑accessible folder.
+2. Add this iframe where you want the game to appear:
+
 ```html
 <iframe src="PATH/TO/index.html" title="Equation Search" style="width:100%;height:80vh;border:0;border-radius:12px"></iframe>
 ```
 
-### Example for GitHub Pages
-If your repo is `username/equation-search`, your `src` becomes:
-```
-https://username.github.io/equation-search/index.html
-```
+## Examples
+- GitHub Pages: https://username.github.io/repo-name/index.html
+- Self-host: https://yourdomain.com/path-to-folder/index.html
 
-### Example for wmbmartialarts.com
-Upload the folder to `/testpage-math/` and set:
-```
-https://wmbmartialarts.com/testpage-math/index.html
-```
+Notes: the game runs client-side in the browser and needs no build tools.

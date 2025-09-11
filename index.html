@@ -1,30 +1,46 @@
 <!doctype html>
+<!-- Root HTML for the game -->
 <html lang="en">
 <head>
+  <!-- Character encoding for correct text rendering -->
   <meta charset="utf-8"/>
+  <!-- Responsive viewport for mobile devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <!-- Page title shown in browser tab -->
   <title>Equation Search — Math Game</title>
+  <!-- Link to local stylesheet for layout and visuals -->
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  <!-- Main app wrapper centered on page -->
   <main class="container">
+    <!-- Header with game title and controls -->
     <header class="header">
+      <!-- Visible title for players -->
       <h1>🔍 Equation Search</h1>
+      <!-- Short instructions; target number fills into the strong element -->
       <p class="muted">Find equations that equal <strong id="searchTarget"></strong>. Drag in straight or diagonal lines.</p>
+      <!-- Row for action buttons like 'New Puzzle' -->
       <div class="btn-row">
+        <!-- Button starts a new puzzle when clicked -->
         <button id="btn-new" class="btn primary">New Puzzle</button>
+        <button id="btn-hint" class="btn">Hint</button>
       </div>
     </header>
 
+    <!-- Main card that holds the game grid -->
     <section class="card">
+      <!-- Grid container where cells are injected by JavaScript -->
       <div id="searchGrid" class="search-grid" aria-label="Equation grid"></div>
     </section>
 
+    <!-- Footer with small site notes -->
     <footer class="footer">
       <small>© 2025 • Works offline • No build tools</small>
     </footer>
   </main>
 
+  <!-- Main application script: builds and runs the game -->
   <script src="app.js"></script>
 </body>
 </html>
