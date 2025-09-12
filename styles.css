@@ -27,7 +27,7 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Seg
 /* Grid: layout and states for each game cell */
 .search-grid{
   display:grid;
-  grid-template-columns:repeat(6, minmax(0,1fr)); /* 6 columns matching GRID_SIZE */
+  grid-template-columns:repeat(var(--grid-size, 6), minmax(0,1fr)); /* dynamic columns based on --grid-size */
   gap:8px; user-select:none; margin-top:10px;
 }
 .cell{
@@ -43,4 +43,4 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,Seg
 .cell.found{ background:#dcfce7; outline:2px solid var(--good); } /* correct answer */
 
 /* Responsive: keep the same grid on narrow screens */
-@media (max-width:600px){ .search-grid{ grid-template-columns:repeat(6, minmax(0,1fr)); } }
+@media (max-width:600px){ .search-grid{ grid-template-columns:repeat(var(--grid-size, 6), minmax(0,1fr)); } }

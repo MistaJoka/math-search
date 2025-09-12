@@ -16,7 +16,7 @@ const els = {
 };
 
 // --- Game state object ---
-let game = { target: null, dragging:false, path:[], cells:[], answersLeft:0, solutions:[] };
+let game = { target: null, dragging:false, path:[], cells:[], answersLeft:0, solutions:[], gridSize: 0 };
 
 // --- Utility: speak text via browser TTS if available ---
 function speak(text){
@@ -27,6 +27,12 @@ function speak(text){
 
 // --- Utility: random integer in [a,b] ---
 function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function calculateGridSize(M) {
+  const k = 2.0
+  const L = 3
+  return Math.ceil(k * Math.sqrt(k * L * M));
+}
 
 // --- Pick a random target number within configured range ---
 function pickTarget(){ return randInt(TARGET_MIN, TARGET_MAX); }
@@ -74,7 +80,7 @@ function buildEquationsForTarget(target){
 
 // --- Grid helpers ---
 function emptyGrid(n){ return Array.from({length:n},()=>Array.from({length:n},()=>'')); } // empty n x n
-function inBounds(r,c){ return r>=0 && r<GRID_SIZE && c>=0 && c<GRID_SIZE; } // index check
+function inBounds(r,c){ return r>=0 && r<game.gridSize && c>=0 && c<game.gridSize; } // index check
 
 // --- Try placing a sequence of tokens (like ["12","+","3"]) on the grid in a straight/diagonal line ---
 function tryPlaceLine(grid, tokens){
@@ -113,6 +119,7 @@ function fillRandoms(grid){
 // --- Render the grid into DOM cells and hook event handlers ---
 function renderGrid(grid){
   els.grid.innerHTML=''; game.cells=[];
+  els.grid.style.setProperty('--grid-size', gridSize);  // set CSS variable for grid size
   for(let r=0;r<GRID_SIZE;r++){
     for(let c=0;c<GRID_SIZE;c++){
       const d=document.createElement('div');
@@ -180,7 +187,8 @@ function finishDrag(){
 
 // --- Build a new puzzle round: pick target, hide equations, fill grid ---
 function buildRound(){
-  const grid=emptyGrid(GRID_SIZE);
+  game.gridSize = calculateGridSize(HIDDEN_EQUATIONS);
+  const grid=emptyGrid(game.gridSize );
   const target = pickTarget();
   game.target = target; els.target.textContent = target; // update UI
   const eqs = buildEquationsForTarget(target);
@@ -198,7 +206,7 @@ function showHint() {
   // Find a solution path that hasn't been found yet
   const unsolved = game.solutions.find(path => {
     // Calculate the index of the first cell in the solution path
-    const firstCellIndex = path[0][0] * GRID_SIZE + path[0][1];
+    const firstCellIndex = path[0][0] * game.gridSize + path[0][1];
     // Check if the first cell in this path is not already marked as 'found'
     return !game.cells[firstCellIndex].classList.contains('found');
   });
