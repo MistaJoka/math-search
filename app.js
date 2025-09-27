@@ -86,8 +86,8 @@ function inBounds(r,c){ return r>=0 && r<game.gridSize && c>=0 && c<game.gridSiz
 function tryPlaceLine(grid, tokens){
   for(let k=0;k<250;k++){ // try many random starts/directions
     const [dr,dc] = DIRS[Math.floor(Math.random()*DIRS.length)];
-    const sr = Math.floor(Math.random()*GRID_SIZE);
-    const sc = Math.floor(Math.random()*GRID_SIZE);
+    const sr = Math.floor(Math.random()*game.gridSize);
+    const sc = Math.floor(Math.random()*game.gridSize);
     let r=sr,c=sc,ok=true;
     for(let i=0;i<tokens.length;i++){
       if(!inBounds(r,c)){ ok=false; break; } // out of bounds
@@ -109,8 +109,8 @@ function tryPlaceLine(grid, tokens){
 // --- Fill any empty cells with random digits/operators ---
 function fillRandoms(grid){
   const pool=['+','−','×','÷','0','1','2','3','4','5','6','7','8','9'];
-  for(let r=0;r<GRID_SIZE;r++){
-    for(let c=0;c<GRID_SIZE;c++){
+  for(let r=0;r<game.gridSize;r++){
+    for(let c=0;c<game.gridSize;c++){
       if(grid[r][c]===''){ grid[r][c]=pool[Math.floor(Math.random()*pool.length)]; }
     }
   }
@@ -119,9 +119,9 @@ function fillRandoms(grid){
 // --- Render the grid into DOM cells and hook event handlers ---
 function renderGrid(grid){
   els.grid.innerHTML=''; game.cells=[];
-  els.grid.style.setProperty('--grid-size', gridSize);  // set CSS variable for grid size
-  for(let r=0;r<GRID_SIZE;r++){
-    for(let c=0;c<GRID_SIZE;c++){
+  els.grid.style.setProperty('--grid-size', game.gridSize);  // set CSS variable for grid size
+  for(let r=0;r<game.gridSize;r++){
+    for(let c=0;c<game.gridSize;c++){
       const d=document.createElement('div');
       d.className='cell'; d.textContent=grid[r][c]; // visible token
       d.dataset.r=r; d.dataset.c=c; // store coordinates for later
@@ -188,7 +188,7 @@ function finishDrag(){
 // --- Build a new puzzle round: pick target, hide equations, fill grid ---
 function buildRound(){
   game.gridSize = calculateGridSize(HIDDEN_EQUATIONS);
-  const grid=emptyGrid(game.gridSize );
+  const grid = emptyGrid(game.gridSize );
   const target = pickTarget();
   game.target = target; els.target.textContent = target; // update UI
   const eqs = buildEquationsForTarget(target);
@@ -196,10 +196,10 @@ function buildRound(){
   game.solutions = [];
   for(const tokens of eqs.slice(0, HIDDEN_EQUATIONS)){
     const pathCoords = tryPlaceLine(grid, tokens);
-    if(tryPlaceLine(grid, tokens)){ game.answersLeft++; game.solutions.push(pathCoords); } // count placed answers
+    if(tryPlaceLine){ game.answersLeft++; game.solutions.push(pathCoords); } // count placed answers
   }
   fillRandoms(grid); // fill blanks
-  renderGrid(grid); // show to user
+  renderGrid(grid, game.gridSize); // show to user
 }
 
 function showHint() {
@@ -220,7 +220,7 @@ function showHint() {
   const hintCells = []; // Array to keep track of cells being highlighted
   unsolved.forEach(([r, c]) => {
     // Calculate the index for each cell in the solution path
-    const index = r * GRID_SIZE + c;
+    const index = r * game.gridSize + c;
     // Get the cell DOM element
     const cell = game.cells[index];
     // Add the 'hint' class to visually highlight the cell
